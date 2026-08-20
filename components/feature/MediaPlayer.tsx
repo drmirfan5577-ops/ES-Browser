@@ -3,8 +3,7 @@ import {
   View, Text, Pressable, StyleSheet, Modal, Dimensions,
   Animated, PanResponder, ScrollView, Alert, Platform,
 } from 'react-native';
-import { useVideoPlayer, VideoView } from 'expo-video';
-import { Audio } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -32,18 +31,28 @@ interface MediaFile {
   height?: number;
 }
 
-/** Video player card using expo-video */
+/** Video player card using expo-av (compatible with Web & Native) */
 function VideoCard({ uri, mode }: { uri: string; mode: PlayerMode }) {
-  const player = useVideoPlayer(uri, p => { p.play(); });
+  const videoRef = useRef<Video>(null);
+  const [status, setStatus] = useState<any>({});
+  
   const h = mode === 'pip' ? 120 : mode === 'half' ? SH * 0.42 : SH;
+
   return (
-    <VideoView
-      player={player}
-      style={[styles.video, { height: h }]}
-      allowsFullscreen
-      allowsPictureInPicture
-      contentFit="contain"
-    />
+    <View style={[styles.videoContainer, { height: h }]}>
+      <Video
+        ref={videoRef}
+        style={styles.video}
+        source={{ uri }}
+        useNativeControls={true}
+        resizeMode={ResizeMode.CONTAIN}
+        isLooping={false}
+        shouldPlay={true}
+        onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+        usePoster={true}
+        posterStyle={styles.poster}
+      />
+    </View>
   );
 }
 
@@ -64,7 +73,7 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
   const [endCursor, setEndCursor] = useState<string | undefined>(undefined);
 
   // Audio player
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const soundRef = useRef<any>(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [audioPos, setAudioPos] = useState(0);
   const [audioDur, setAudioDur] = useState(0);
@@ -81,10 +90,12 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
   // Glow animation
   const glowAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    Animated.loop(Animated.sequence([
+    const loop = Animated.loop(Animated.sequence([
       Animated.timing(glowAnim, { toValue: 1, duration: 2200, useNativeDriver: true }),
       Animated.timing(glowAnim, { toValue: 0, duration: 2200, useNativeDriver: true }),
-    ])).start();
+    ]));
+    loop.start();
+    return () => loop.stop();
   }, []);
 
   // Request permission on first open
@@ -114,7 +125,9 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
       setMediaFiles(reset ? files : prev => [...prev, ...files]);
       setHasNextPage(res.hasNextPage);
       setEndCursor(res.endCursor);
-    } catch {}
+    } catch (error) {
+      console.error('Error loading media:', error);
+    }
     setIsLoading(false);
   };
 
@@ -132,10 +145,15 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
     }
   }, [initialUri, visible]);
 
-  // Audio
+  // Audio functions
   const stopAudio = async () => {
     if (soundRef.current) {
-      try { await soundRef.current.stopAsync(); await soundRef.current.unloadAsync(); } catch {}
+      try { 
+        await soundRef.current.stopAsync(); 
+        await soundRef.current.unloadAsync(); 
+      } catch (e) {
+        console.error('Error stopping audio:', e);
+      }
       soundRef.current = null;
     }
     setAudioPlaying(false); setAudioPos(0); setAudioDur(0);
@@ -146,7 +164,6 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
     await stopAudio();
     setCurrentFile(file);
     try {
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: true });
       const { sound } = await Audio.Sound.createAsync(
         { uri: file.uri },
         { shouldPlay: true },
@@ -159,19 +176,23 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
         }
       );
       soundRef.current = sound;
+      
       Animated.loop(Animated.sequence([
         Animated.timing(pulseAnim, { toValue: 1.1, duration: 600, useNativeDriver: true }),
         Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
       ])).start();
-    } catch {
+    } catch (error) {
+      console.error('Error playing audio:', error);
       Alert.alert('Error', 'Could not play audio file.');
     }
   };
 
   const toggleAudio = async () => {
     if (!soundRef.current) return;
-    if (audioPlaying) { await soundRef.current.pauseAsync(); pulseAnim.stopAnimation(); }
-    else {
+    if (audioPlaying) { 
+      await soundRef.current.pauseAsync(); 
+      pulseAnim.stopAnimation(); 
+    } else {
       await soundRef.current.playAsync();
       Animated.loop(Animated.sequence([
         Animated.timing(pulseAnim, { toValue: 1.1, duration: 600, useNativeDriver: true }),
@@ -180,7 +201,9 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
     }
   };
 
-  useEffect(() => { if (!visible) stopAudio(); }, [visible]);
+  useEffect(() => { 
+    if (!visible) stopAudio(); 
+  }, [visible]);
 
   const formatTime = (ms: number) => {
     const s = Math.floor(ms / 1000);
@@ -207,7 +230,7 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
               <MaterialIcons name="arrow-back" size={22} color="#fff" />
             </Pressable>
             <Text style={[styles.headerTitle, { textShadowColor: theme.glowColor, textShadowRadius: 8 }]}>
-              🎬 Media Player | میڈیا پلیئر
+               Media Player | میڈیا پلیئر
             </Text>
             {!permission?.granted && (
               <Pressable onPress={() => requestPermission()} style={[styles.permSmallBtn, { backgroundColor: theme.primary }]}>
@@ -267,7 +290,7 @@ export function MediaPlayer({ visible, onClose, initialUri }: MediaPlayerProps) 
                 }]}>
                 <MaterialIcons name={t === 'videos' ? 'videocam' : 'music-note'} size={14} color="#fff" />
                 <Text style={styles.tabText}>
-                  {t === 'videos' ? '🎬 Videos | ویڈیوز' : '🎵 Audio | آڈیو'}
+                  {t === 'videos' ? ' Videos | ویڈیوز' : ' Audio | آڈیو'}
                 </Text>
               </Pressable>
             ))}
@@ -376,7 +399,9 @@ const styles = StyleSheet.create({
   permSmallText: { color: '#fff', fontSize: 11, fontWeight: '700' },
   permNotice: { flexDirection: 'row', alignItems: 'center', gap: 8, margin: 12, borderRadius: 12, borderWidth: 1, overflow: 'hidden', padding: 12 },
   permNoticeText: { flex: 1, color: 'rgba(255,255,255,0.8)', fontSize: 11, lineHeight: 17 },
-  video: { width: '100%', backgroundColor: '#000' },
+  videoContainer: { width: '100%', backgroundColor: '#000' },
+  video: { width: '100%', height: '100%', backgroundColor: '#000' },
+  poster: { width: '100%', height: '100%' },
   audioBar: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12, margin: 10, borderRadius: 14, borderWidth: 1, overflow: 'hidden' },
   audioBarIcon: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,105,180,0.25)', justifyContent: 'center', alignItems: 'center' },
   audioBarName: { color: '#fff', fontSize: 11, fontWeight: '700' },
