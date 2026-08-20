@@ -1,5 +1,2 @@
-EXPO_PUBLIC_SUPABASE_Annon key 
-sb_publishable_ZotnzMSaJm51XOqI1OXXCg_LB4W6tQq
-
-EXPO_PUBLIC_SUPABASE_URL
-https://zieohvobevjyafkbbobi.supabase.co/rest/v1/
+EXPO_PUBLIC_SUPABASE_URL=https://zieohvobevjyafkbbobi.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_ZotnzMSaJm51X0qI10XXCg_LB4W6tQq
