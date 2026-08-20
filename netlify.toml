@@ -1,0 +1,12 @@
+[build]
+  # اگر یہ سادہ HTML/CSS/JS پروجیکٹ ہے تو publish فولڈر "." یا "public" رکھیں
+  publish = "."
+  
+  # اگر یہ React, Vue یا کوئی فریم ورک ہے، تو کمنٹ ہٹا کر اپنا بلڈ کمانڈ لکھیں:
+  # command = "npm run build"
+
+# Single Page Application (SPA) کے لیے ضروری: تاکہ ریفریش کرنے پر 404 ایرر نہ آئے
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
