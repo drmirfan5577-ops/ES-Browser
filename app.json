@@ -1,0 +1,97 @@
+{
+  "expo": {
+    "name": "EvEr SmArT BrOwSeR",
+    "slug": "ever-smart-browser",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/esb-logo.png",
+    "scheme": "eversmartbrowser",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "description": "Pakistan's most luminous glassmorphic mobile browser with Islamic Hub, AI Hub, VPN, Ad Blocker, PiP Player, Bookmark Manager and 16 stunning themes.",
+    "primaryColor": "#DD2476",
+    "splash": {
+      "image": "./assets/images/esb-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0D0020"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.drirfan.eversmartbrowser",
+      "buildNumber": "2.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Used for video recording in Movie Maker feature",
+        "NSMicrophoneUsageDescription": "Used for audio/video recording",
+        "NSPhotoLibraryUsageDescription": "Used to access media library for PiP player",
+        "NSPhotoLibraryAddUsageDescription": "Used to save downloaded media files"
+      }
+    },
+    "android": {
+      "package": "com.drirfan.eversmartbrowser",
+      "versionCode": 20,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/esb-logo.png",
+        "backgroundColor": "#0D0020"
+      },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE"
+      ],
+      "edgeToEdgeEnabled": true,
+      "allowBackup": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/esb-logo.png",
+      "name": "EvEr SmArT BrOwSeR",
+      "shortName": "ESBrOwSeR",
+      "description": "Pakistan's most luminous glassmorphic mobile browser",
+      "themeColor": "#0D0020",
+      "backgroundColor": "#0D0020",
+      "display": "standalone",
+      "orientation": "portrait"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/esb-logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0D0020"
+        }
+      ],
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow EvEr SmArT BrOwSeR to access your photos for media playback."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ever-smart-browser"
+      },
+      "website": "SWO.EvESmArTBrOwSeR/drirfan",
+      "author": "Dr. Irfan",
+      "country": "Pakistan"
+    }
+  }
+}
