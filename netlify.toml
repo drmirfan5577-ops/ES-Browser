@@ -1,9 +1,6 @@
 [build]
-  # اگر یہ سادہ HTML/CSS/JS پروجیکٹ ہے تو publish فولڈر "." یا "public" رکھیں
-  publish = "."
-  
-  # اگر یہ React, Vue یا کوئی فریم ورک ہے، تو کمنٹ ہٹا کر اپنا بلڈ کمانڈ لکھیں:
-  # command = "npm run build"
+  command = "pnpm install --frozen-lockfile && pnpm exec expo export -p web"
+  publish = "dist"
 
 # Single Page Application (SPA) کے لیے ضروری: تاکہ ریفریش کرنے پر 404 ایرر نہ آئے
 [[redirects]]
