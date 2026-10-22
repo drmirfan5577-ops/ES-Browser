@@ -1,0 +1,21 @@
+export const THEMES = [
+  ['Emerald Green','#003e2b','#061e19','#17ce93'],
+  ['Islamic Emerald','#005b34','#071f18','#70dc9f'],
+  ['Pakistan Green & White','#075c32','#eef7f0','#17804c'],
+  ['Crimson Gold','#fff0ca','#fffaf0','#ab741d'],
+  ['Royal Blue','#172777','#090e28','#79a6ff'],
+  ['Deep Space Black','#282048','#0c0b1b','#b49bff'],
+  ['Aurora Borealis','#075a57','#111b35','#64d9d1'],
+  ['Golden Mosque','#604503','#1c180b','#e8c76e'],
+  ['Ruby Red','#710f24','#240c17','#ff9ba9'],
+  ['Rose Gold','#74374f','#281823','#efb3bd'],
+  ['Neon Cyber Pulse','#153e21','#08170f','#8ae697'],
+  ['Holographic Crystal','#136b87','#241741','#8de7f2'],
+  ['Crystal Clear White','#e2f5ff','#f2faff','#299dce'],
+  ['Plasma Storm','#8b0778','#270e3c','#ed9be7'],
+  ['Sunset Orange','#ffddb2','#fff5e9','#ba6322'],
+  ['Sapphire','#c9e2ff','#edf5ff','#346ec0'],
+  ['Violet Pink','#f0d4fa','#fff2ff','#9d48ba'],
+  ['Lava Magma Flow','#80330e','#29150e','#ffad6c'],
+];
+export const LIGHT_THEMES = [2,3,12,14,15,16];
