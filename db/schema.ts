@@ -7,3 +7,8 @@ export const entries = pgTable('browser_entries', {
   url: text().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, table => [index('browser_entries_owner_kind').on(table.owner, table.kind)]);
+export const preferences = pgTable('browser_preferences', {
+  owner: text().primaryKey(),
+  theme: text().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
