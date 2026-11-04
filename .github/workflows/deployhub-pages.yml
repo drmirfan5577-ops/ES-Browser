@@ -1,0 +1,36 @@
+name: DeployHub Pages
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: deployhub-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: "npm run build -- --base=./"
+      - name: Validate static output
+        env:
+          OUTPUT: "dist"
+        run: |
+          test -f "$OUTPUT/index.html"
+          touch "$OUTPUT/.nojekyll"
+          if [ ! -f "$OUTPUT/404.html" ]; then cp "$OUTPUT/index.html" "$OUTPUT/404.html"; fi
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "dist"
+      - uses: actions/deploy-pages@v4
+        id: deployment
